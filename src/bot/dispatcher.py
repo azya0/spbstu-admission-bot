@@ -10,8 +10,19 @@ from spbstu import get_list_of_candidates_for_admission, UnexpectedStatus
 dispatcher = Dispatcher()
 
 
+def get_keyboard(text: str) -> InlineKeyboardBuilder:
+    keyboard = InlineKeyboardBuilder()
+    
+    keyboard.button(
+        text=text,
+        callback_data="get_my_position"
+    )
+
+    return keyboard
+
+
 async def callback_answer(callback: CallbackQuery, text: str) -> None:
-    await callback.message.answer(text)
+    await callback.message.answer(text, reply_markup=get_keyboard("Обновить").as_markup())
     await callback.answer()
 
 
@@ -22,16 +33,11 @@ async def periodic_message(chat_id: int) -> None:
 
 @dispatcher.message(Command("start"))
 async def init(message: Message) -> None:
-    keyboard = InlineKeyboardBuilder()
-
-    keyboard.button(
-        text="На какой я позиции в списках к зачислению?",
-        callback_data="get_my_position"
-    )
-
     await message.answer(
         "Ну шо, голова? Поехали",
-        reply_markup=keyboard.as_markup()
+        reply_markup=get_keyboard(
+            text="На какой я позиции в списках к зачислению?"
+        ).as_markup()
     )
 
 
