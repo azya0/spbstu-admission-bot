@@ -3,8 +3,10 @@ from aiogram.filters import Command
 from aiogram.types import CallbackQuery, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from settings import Settings, get_settings
-from spbstu import get_list_of_candidates_for_admission, UnexpectedStatus
+from database.database import DictDatabase
+from database.redis_database.database import get_user_db
+from spbstu import UnexpectedStatus
+from spbstu.endpoints import get_place_by_user_id
 
 
 dispatcher = Dispatcher()
@@ -26,13 +28,11 @@ async def callback_answer(callback: CallbackQuery, text: str) -> None:
     await callback.answer()
 
 
-# TODO
-async def periodic_message(chat_id: int) -> None:
-    ...
-
-
 @dispatcher.message(Command("start"))
-async def init(message: Message) -> None:
+async def init(message: Message, user_database: DictDatabase = get_user_db()) -> None:
+    if message.from_user is not None:
+        user_database.set(str(message.from_user.id), str(message.chat.id))
+
     await message.answer(
         "Ну шо, голова? Поехали",
         reply_markup=get_keyboard(
@@ -42,16 +42,15 @@ async def init(message: Message) -> None:
 
 
 @dispatcher.callback_query(F.data == "get_my_position")
-async def get_my_position(callback: CallbackQuery, settings: Settings = get_settings()) -> None:
+async def get_my_position(callback: CallbackQuery) -> None:
     try:
-        data = await get_list_of_candidates_for_admission()
+        index = await get_place_by_user_id()
     except UnexpectedStatus as error:
         await callback_answer(str(error))
         return
 
-    for index, candidate in enumerate(data):
-        if int(candidate.code) == settings.spbstu_settings.id:
-            await callback_answer(callback, f"Ты на {index + 1} месте!")
-            return
+    if index != -1:
+        await callback_answer(callback, f"Ты на {index} месте!")
+        return
 
     await callback_answer(callback, "Тебя нет в этом списке...")

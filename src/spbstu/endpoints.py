@@ -28,3 +28,13 @@ async def get_list_of_candidates_for_admission() -> list[Candidate]:
     test = [candidate for candidate in data if candidate.comment_status == "К зачислению"]
 
     return test
+
+
+async def get_place_by_user_id(settings: Settings = get_settings()) -> int:
+    data = await get_list_of_candidates_for_admission()
+
+    for index, candidate in enumerate(data):
+        if int(candidate.code) == settings.spbstu_settings.id:
+            return index + 1
+
+    return -1

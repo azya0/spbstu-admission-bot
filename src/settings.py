@@ -6,9 +6,6 @@ from pydantic_settings import BaseSettings
 from pydantic import Field
 
 
-load_dotenv()
-
-
 class BotSettings(BaseSettings):
     token: str = Field(alias="TELEGRAM_BOT_TOKEN")
 
@@ -26,6 +23,8 @@ class Settings:
 
 @lru_cache
 def get_settings() -> Settings:
+    load_dotenv()
+
     return Settings(
         bot_settings=BotSettings(),
         spbstu_settings=SpbstuSettings(),
