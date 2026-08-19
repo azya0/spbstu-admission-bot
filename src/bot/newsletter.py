@@ -1,28 +1,32 @@
 from asyncio import sleep
+from collections.abc import Callable
 from types import CoroutineType
-from typing import Any, Callable
+from typing import Any
 
 from aiogram import Bot as TelegramBot
 from aiogram.types import Message
 
 from bot.utils import get_send_message
 from database.database import DictDatabase
-from database.redis_database import get_user_db
+from database.redis_database import get_user_spbstu_db
 from spbstu.endpoints import get_place_by_user_id
 from spbstu.exceptions import UnexpectedStatus
 
 from .bot import get_bot
 
-
 SLEEP_SECONDS = 30 * 60
 
 
 async def __periodic_body(user_database: DictDatabase, send_message: Callable[[int, str], CoroutineType[Any, Any, Message]]) -> None:
-    for user_id_str in user_database.get_keys():
-        chat_id: int = int(user_database.get(user_id_str))
+    for chat_id_str in user_database.get_keys():
+        chat_id: int = int(chat_id_str)
+        user_code_str, spbstu_program_str = user_database.get(chat_id_str).split()
 
         try:
-            user_index = await get_place_by_user_id()
+            user_index = await get_place_by_user_id(
+                user_code=int(user_code_str),
+                spbstu_program=int(spbstu_program_str)
+            )
         except UnexpectedStatus as error:
             await send_message(chat_id, f"Ошибка:\n{error}")
 
@@ -33,7 +37,7 @@ async def __periodic_body(user_database: DictDatabase, send_message: Callable[[i
         await send_message(chat_id, "Бро... ты больше не в списках...")
 
 
-async def periodic_message(bot: TelegramBot = get_bot(), user_database: DictDatabase = get_user_db()) -> None:
+async def periodic_message(bot: TelegramBot = get_bot(), user_database: DictDatabase = get_user_spbstu_db()) -> None:
     send_message = get_send_message(bot)
 
     while True:

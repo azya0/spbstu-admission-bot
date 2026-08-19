@@ -1,11 +1,12 @@
-from typing import AsyncGenerator
+from collections.abc import AsyncGenerator
 
-from aiohttp import ClientSession, ClientResponse
+from aiohttp import ClientResponse, ClientSession
 from futile_di_azya0 import Depends
 
+CSRF_TOKEN: str = "7Hc3rwyOA395HxZIdERcjnSwUbRGxjOz"
 
 COOKIES: dict[str, str] = {
-    "csrftoken": "ТВОЙ_CSRF",
+    "csrftoken": CSRF_TOKEN,
     "sessionid": "ТВОЙ_SESSIONID",
     "cookie_name": "cookie_value",
 }
@@ -17,6 +18,9 @@ HEADERS: dict[str, str | dict[str]] = {
     ),
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Content-Type": "application/json",
+    "Origin": "https://my.spbstu.ru",
+    "X-CSRFToken": CSRF_TOKEN,
 }
 
 

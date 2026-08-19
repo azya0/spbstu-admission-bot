@@ -1,12 +1,11 @@
+from collections.abc import Callable
 from functools import lru_cache
-from typing import Callable
 
 from redis import Redis
 
-from .settings import get_redis_settings, RedisSettings
+from .settings import RedisSettings, get_redis_settings
 
-
-USER_TO_CHAT_DB_INDEX = 0
+CHAT_TO_SPBSTU_USER_DB_INDEX = 0
 
 
 @lru_cache
@@ -17,6 +16,5 @@ def _get_redis_db(redis_settings: RedisSettings = get_redis_settings()) -> Calla
         db=db_index
     )
 
-
-def get_user_to_chat_db(connection_info: Callable[[int], Redis] = _get_redis_db()) -> Redis:
-    return connection_info(USER_TO_CHAT_DB_INDEX)
+def get_chat_to_spbstu_user_db(connection_info: Callable[[int], Redis] = _get_redis_db()) -> Redis:
+    return connection_info(CHAT_TO_SPBSTU_USER_DB_INDEX)

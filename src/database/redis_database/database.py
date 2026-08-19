@@ -1,11 +1,11 @@
-from typing import Sequence
+from collections.abc import Sequence
 
 from redis import Redis
 
 from database import DictDatabase
 from database.exception import DictDatabaseKeyNotFound
 
-from .client import get_user_to_chat_db
+from .client import get_chat_to_spbstu_user_db
 
 
 class RedisDatabase(DictDatabase):
@@ -27,5 +27,5 @@ class RedisDatabase(DictDatabase):
         return [key.decode() for key in self.connection.scan_iter()]
 
 
-def get_user_db(connection: Redis = get_user_to_chat_db()) -> RedisDatabase:
+def get_user_spbstu_db(connection: Redis = get_chat_to_spbstu_user_db()) -> RedisDatabase:
     return RedisDatabase(connection)

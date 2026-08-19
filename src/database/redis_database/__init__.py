@@ -1,1 +1,1 @@
-from .database import get_user_db
+from .database import get_user_spbstu_db

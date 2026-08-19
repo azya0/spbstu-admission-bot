@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from functools import lru_cache
 
 from dotenv import load_dotenv
-from pydantic_settings import BaseSettings
 from pydantic import Field
+from pydantic_settings import BaseSettings
 
 
 class BotSettings(BaseSettings):
@@ -11,8 +11,14 @@ class BotSettings(BaseSettings):
 
 
 class SpbstuSettings(BaseSettings):
-    id: int = Field(alias="SPBSPU_ID")
-    url: str = Field(alias="SPBSPU_URL")
+    program_candidates_list_url: str = Field(
+        alias="SPBSTU_PROGRAM_CANDIDATES_LIST_URL",
+        default="https://my.spbstu.ru/home/get-abit-list"
+    )
+    codes_list_url: str = Field(
+        alias="SPBSTU_CODES_LIST_URL",
+        default="https://my.spbstu.ru/home/get-code-list"
+    )
 
 
 @dataclass
