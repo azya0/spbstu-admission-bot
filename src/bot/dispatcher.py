@@ -133,6 +133,7 @@ async def main_state(message: Message, state: FSMContext) -> None:
 
     if index == -1:
         await message.answer('Тебя там нету со статусом "К зачислению"...')
+        return
 
     await message.answer(
         f"Ну я тут погуглил... Ты короче на {index} месте",

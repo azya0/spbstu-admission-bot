@@ -1,6 +1,6 @@
 [project]
 name = "tg-bot"
-version = "1.0.1"
+version = "1.0.2"
 description = "App to check you position in spbstu master_pre_competition_lists"
 readme = "README.md"
 requires-python = ">=3.14"
