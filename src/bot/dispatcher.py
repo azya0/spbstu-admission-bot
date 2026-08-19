@@ -131,6 +131,9 @@ async def main_state(message: Message, state: FSMContext) -> None:
     except UnexpectedStatus:
         await message.answer("Ну я тут погуглил... Нихуя я не нагуглил, пиздец какой-то")
 
+    if index == -1:
+        await message.answer('Тебя там нету со статусом "К зачислению"...')
+
     await message.answer(
         f"Ну я тут погуглил... Ты короче на {index} месте",
         reply_markup=get_keyboard(text="Обновить").as_markup()
